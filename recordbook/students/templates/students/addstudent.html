@@ -1,0 +1,17 @@
+<!doctype html>
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить студента</title>
+    <link rel="shortcut icon" href="{% static 'students/images/logo.ico' %}" type="image/x-icon"/>
+</head>
+<body>
+<p>Добавление студента форма</p>
+    <form action = "{% url 'addstudent' %}" method='post' enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Добавить</button>
+    </form>
+</body>
+</html>

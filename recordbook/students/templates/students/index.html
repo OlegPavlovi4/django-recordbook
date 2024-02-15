@@ -1,0 +1,62 @@
+{% extends 'students/base.html' %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+
+    <form action="{% url 'home' %}" method="get">
+        {{ st_filter.form.as_p }}
+        <button type="submit">Искать</button>
+    </form>
+
+    <ul>
+        {% for st in students %}
+            <li>
+                <a href="{{ st.get_absolute_url }}">
+                    {{ st.first_name }}
+                    {{ st.middle_name }}
+                    {{ st.last_name | upper}}
+                </a>
+                {{ st.group.course }}-{{ st.group.name }}
+            </li>
+        {% endfor %}
+    </ul>
+    <p>Всего студентов: {{ students | length }}</p>
+
+
+    {% if page_obj.has_other_pages %}
+    <nav class="list-pages">
+        <ul>
+            {% if page_obj.has_previous %}
+                <li class="page-num">
+                    <a href="?page={{ page_obj.previous_page_number }}">&lt;</a>
+                </li>
+            {% endif %}
+            {% for p in paginator.page_range %}
+                {% if page_obj.number == p %}
+                    <li class="page-num page-num-selected">{{ p }}</li>
+                {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+
+                    <li class="page-num">
+                        <a href="?page={{ p }}">{{ p }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-num">
+                <a href="?page={{ page_obj.next_page_number }}">&gt;</a>
+            </li>
+            {% endif %} 
+
+
+        </ul>
+    </nav>
+    {% endif %}
+
+
+    {% if auth %}
+        <p><a href="{% url 'addstudent' %}">Добавить студента</a></p>
+    {% endif %}
+{% endblock %}
+
+
+

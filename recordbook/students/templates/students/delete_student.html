@@ -1,0 +1,15 @@
+{% extends 'students/base.html' %}
+
+{% block content %}
+    <div class="center">
+        <form method="post" class="'card">
+            {% csrf_token %}
+            <h2>Удаление студента</h2>
+            <p>Вы уверены что хотите удалить "{{ st.last_name}} {{ st.first_name}} {{ st.middle_name}}"?</p>
+            <p class="form-buttons">
+                <input type="submit" class="btn btn-primary" value="Delete">
+                <a href="{{ st.get_absolute_url }}" class="btn btn-outline">Cancel</a>  
+            </p>
+        </form>
+    </div>
+{% endblock %}

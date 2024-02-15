@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ title }}</title>
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="{% static './css/styles.css' %}"
+    />
+  </head>
+  <body>
+    {% block mainmenu %}
+    <div class="header">
+      <ul id="mainmenu" class="mainmenu">
+        <li class="logo">
+          <a href="{% url 'home' %}"><div class="logo"></div></a>
+        </li>
+        {% for m in menu %}
+        <li><a href="{% url m.url_name %}">{{ m.title }}</a></li>
+        {% endfor %}
+
+
+        {% if request.user.is_authenticated %}
+            <li class="last"> {{ user.username}} | <a href="{% url 'logout' %}">Выйти</a></li>
+        {% else %}
+            <li class="last">
+                <a href="{% url 'register' %}">Регистрация</a> | <a href="{% url 'login' %}">Войти</a>
+            </li>
+        {% endif %}
+        
+      </ul>
+    </div>
+    {% endblock mainmenu %} 
+    {% block content %} 
+    {% endblock content %}
+  </body>
+</html>

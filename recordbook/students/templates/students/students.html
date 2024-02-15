@@ -1,0 +1,18 @@
+{% extends 'students/base.html' %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    <ul>
+        {% for st in students %}
+            <li>
+                <a href="{{ st.get_absolute_url }}">
+                    {{ st.first_name }}
+                    {{ st.middle_name }}
+                    {{ st.last_name | upper}}
+                </a>
+               
+            </li>
+        {% endfor %}
+    </ul>
+    <p>Всего студентов: {{ students | length }}</p>
+{% endblock %}
