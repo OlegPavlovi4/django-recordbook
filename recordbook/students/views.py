@@ -8,7 +8,7 @@ from django.contrib.auth import logout, login
 
 
 from .filters import StudentFilter
-from .forms import AddStudentForm, FilterStudentForm, LoginUserForm, RegisterUserForm
+from .forms import AddStudentForm, ChooseGroupForm, ChooseSubjectForm, FilterStudentForm, LoginUserForm, RegisterUserForm
 from .models import Student
 from .utils import DataMixin, menu
 
@@ -147,6 +147,48 @@ class UpdateStudent(LoginRequiredMixin, DataMixin, UpdateView):
         c_def = self.get_user_context(title="Изменить студента")
         return {**context, **c_def} 
 
+
+class Gradebook(DataMixin, ListView):
+    template_name = 'students/gradebook.html'
+    context_object_name = 'students'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        auth = self.request.user.is_authenticated
+        group = self.request.GET.get('group')
+        subject = self.request.GET.get('subject')
+        dates = set()
+        studs = []
+
+        if group and subject:
+            selected_students = Student.objects.filter(group=group)
+            for st in selected_students:
+                for sub in st.gradebook_set.filter(subject=subject):
+                    dates.add(sub.date)
+            dates = sorted(dates)
+
+            for st in selected_students:
+                marks =[''] * len(dates)
+                for sub in st.gradebook_set.filter(subject=subject):
+                    marks[dates.index(sub.date)] = sub.mark
+                studs.append((f'{st.last_name} {st.first_name[0]}.{st.first_name[0]}.', marks))
+
+        c_def = self.get_user_context(title='Журнал успеваемости',
+                                      auth=auth,
+                                      group_form=ChooseGroupForm(self.request.GET),
+                                      subj_form=ChooseSubjectForm(self.request.GET, group=group),
+                                      group=group,
+                                      subject=subject,
+                                      dates=dates, 
+                                      studs=studs)
+        return {**context, **c_def} 
+    
+    def get_queryset(self):
+        group = self.request.GET.get('group')
+        group = 0 if group == '' else group
+        return Student.objects.filter(group=group)
+        
+    
 
 # def index(request):
 #     students = Student.objects.all()

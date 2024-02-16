@@ -1,0 +1,36 @@
+{% extends 'students/base.html' %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+<br>
+<form action="{% url 'gradebook' %}" method="get">
+    {{ group_form }}
+    <button type="submit">Выбрать</button>
+</form>
+{% if group %}
+    <form action="{% url 'gradebook' %}" method="get">
+        {{ subj_form }}
+        <input type="hidden" name="group" value="{{ group }}">
+        <button type="submit">Выбрать</button>
+    </form>
+{% endif %}
+<br>
+{% if group and subject %}
+    <table>
+        <tr>
+            <th>Ф.И.О.</th>
+            {% for d in dates %}
+                <th>{{ d | date:'d-m-y' }}</th>
+            {% endfor %}
+        </tr>
+        {% for st in studs %}
+        <tr>
+            <td>{{st.0}}</td>
+            {% for m in st.1 %}
+                <td>{{m}}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+{% endif %}   
+{% endblock %}
